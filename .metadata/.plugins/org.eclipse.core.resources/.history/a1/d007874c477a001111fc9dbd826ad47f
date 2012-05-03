@@ -1,0 +1,674 @@
+/*
+ * 功能：事件监听机制
+ */
+package com.test;
+import java.awt.*;
+import java.io.*;
+
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.*;
+
+public class test extends JFrame implements ActionListener{
+    
+	MyPanel mp=null;
+	MyStartPanel msp=null;
+	JMenuBar jmb=null;
+	JMenu jbGame=null;
+	JMenuItem jmiStart,jmiContinue,jmiExit=null;
+	public static void main(String[] args) {
+	// TODO Auto-generated method stub
+    test t=new test();
+	}
+    
+	public test()
+	{   
+		msp=new MyStartPanel();
+		jmb=new JMenuBar();
+		jbGame=new JMenu("游戏(&g)");
+		jbGame.setMnemonic('G');
+		jmiStart=new JMenuItem("开始(&b)");
+		jmiStart.setMnemonic('B');
+		jmiStart.setActionCommand("newgame");
+		jmiStart.addActionListener(this);
+		jmiContinue=new JMenuItem("继续上一次(&c)");
+		jmiContinue.setMnemonic('C');
+		jmiContinue.setActionCommand("continue");
+		jmiContinue.addActionListener(this);
+	    jmiExit=new JMenuItem("保存退出(&e)");
+	    jmiExit.setMnemonic('E');
+	    jmiExit.setActionCommand("saveandexit");
+	    jmiExit.addActionListener(this);
+	    
+	    jbGame.add(jmiStart);
+	    jbGame.add(jmiContinue);
+	    jbGame.add(jmiExit);
+	    jmb.add(jbGame);
+	    this.setJMenuBar(jmb);
+		this.add(msp);
+				
+		this.setSize(510,450);
+		Thread t=new Thread(msp);
+		t.start();
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
+
+	}
+
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		if(arg0.getActionCommand().equals("newgame"))
+		{
+			mp=new MyPanel("newgame");
+						
+			this.remove(msp);
+			this.add(mp);
+			this.addKeyListener(mp);
+			this.setVisible(true);
+
+			Thread t=new Thread(mp);
+			t.start();
+	
+		}
+		else if(arg0.getActionCommand().equals("continue"))
+		{
+			mp=new MyPanel("continue");
+			
+			this.remove(msp);
+			this.add(mp);
+			this.addKeyListener(mp);
+			this.setVisible(true);
+
+			Thread t=new Thread(mp);
+			t.start();
+		}
+		else if(arg0.getActionCommand().equals("saveandexit"))
+		{
+			try {
+				FileWriter fw=new FileWriter("D:\\Temp\\record.txt");
+				BufferedWriter bw=new BufferedWriter(fw);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			System.exit(0);
+		}
+	}
+}
+
+class MyStartPanel extends JPanel implements Runnable 
+{	
+	int times=0;
+	public void paint(Graphics g)
+	{ 
+		super.paint(g);
+		g.setColor(Color.red);
+		g.fillRect(0,0,400,300);
+			
+		if(times%2 == 0)
+		{
+			g.setFont(new Font("微软雅黑",50,50));
+			g.setColor(Color.blue);
+			g.drawString("Stage:1", 100, 150);
+		}
+		
+		times++;		
+	}
+
+	public void run() {
+		// TODO Auto-generated method stub
+		
+		while(true)
+		{
+			try {
+
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		repaint();
+		}
+	}
+}
+class MyPanel extends JPanel implements KeyListener,Runnable
+{
+	int numofEmy=3;
+	int numofMtank=2;
+    Vector<Enemy> vts=null;
+    Vector<MyTank> vtsmy1=null;
+    Vector<MyTank> vtsmy2=null;
+    MyTank mt1Draw,mt2Draw=null;
+    Enemy emyDraw,emy1Clear,emy2Clear=null;
+    boolean isPause=false;
+	public void paint(Graphics g)
+	{
+		super.paint(g);
+
+		g.setColor(Color.red);
+		g.fillRect(0, 0, 400, 300);
+		
+		draw(g,mt1Draw);
+		draw(g,mt2Draw);
+		draw(g,emyDraw);
+		g.setColor(Color.black);
+		g.drawString(Integer.toString(Record.getNumofenm()), 45, 355);
+		g.drawString(Integer.toString(Record.getNumofmy1()), 105, 355);
+		g.drawString(Integer.toString(Record.getNumofmy2()), 165, 355);
+		g.setFont(new Font("微软雅黑",Font.BOLD,17));
+		g.drawString("Player1的总成绩",400,50);
+		g.drawString("Player2的总成绩",400,120);
+		draw(g,emy1Clear);
+		draw(g,emy2Clear);
+		g.setColor(Color.black);
+		synchronized(this)
+		{
+		g.drawString(Integer.toString(Record.getClearemy1()), 450,90);
+		g.drawString(Integer.toString(Record.getClearemy2()),450,160);
+		}
+		
+		drawTankThread(g,vtsmy1);
+		drawTankThread(g,vtsmy2);
+		for(int j=0;j<vts.size();++j)
+		{   
+			if(vts.get(j).isLive)
+			{
+				draw(g,vts.get(j));
+			}
+			if(!vts.isEmpty())
+			{
+			for(int k=0;k<vts.get(j).vts.size();++k)
+			{	
+				if(vts.get(j).vts.get(k) != null && vts.get(j).vts.get(k).isLive)
+				{
+					g.setColor(Color.green);
+			        g.drawLine(vts.get(j).vts.get(k).x, vts.get(j).vts.get(k).y, vts.get(j).vts.get(k).x, vts.get(j).vts.get(k).y);		
+				}
+			        if(!vts.get(j).vts.get(k).isLive)				
+		        {
+			      vts.get(j).vts.remove(vts.get(j).vts.get(k));
+			      vts.get(j).numofbullet--;			
+		        }
+			}
+			}
+			if(!vts.get(j).isLive )
+			{	 				
+				if(vts.get(j).numofbullet == 0)
+				{ 
+				   vts.remove(vts.get(j));
+				   if(Record.getNumofenm() >0 )
+				   {  
+				   Record.reduceNumofemy();
+				   Enemy emy=new Enemy(50*(j+1),15);
+				   vts.add(emy);
+				   emy.setEts(vts);
+				   Thread t=new Thread(emy);				
+				   t.start();
+				   }
+				}
+			}
+		}
+    }
+	public void drawTankThread(Graphics g,Vector<MyTank> mt)
+	{   
+		for(int i=0;i<mt.size();++i)
+		{
+		if(mt.get(i).isLive)
+		{
+			draw(g,mt.get(i));
+		}
+		if(!mt.isEmpty())
+		{
+			for(int m=0;m<mt.get(i).vts.size();++m)
+		    {
+			if(mt.get(i).vts.get(m).isLive)//vtsm.get(i).vts.get(m) != null && vtsm.get(i).vts.get(m).isLive)
+			{   
+				g.setColor(Color.CYAN);
+				g.fillOval(mt.get(i).vts.get(m).x-2, mt.get(i).vts.get(m).y-2, 4, 4);
+			}
+		    if(!mt.get(i).vts.get(m).isLive)				
+		      {
+		    	mt.get(i).vts.remove(mt.get(i).vts.get(m));
+		    	mt.get(i).numofbullet--;			
+		      }
+		     }
+		}
+		if(!mt.get(i).isLive && mt.get(i).numofbullet == 0)
+		{    
+			  MyTank mtTemp=null;
+			  if(mt.get(i).getType() == Tank.MYTANK1)
+			  {  
+				  mt.remove(mt.get(i));
+			      if(Record.getNumofmy1() > 0)
+			      {
+				  Record.reduceNumofmy1();
+				  mtTemp=new MyTank(100,50,Tank.MYTANK1);
+				  mtTemp.setStep(5);
+				  mtTemp.setDirection(Tank.UP);
+				  mt.add(mtTemp);
+				  mtTemp.setVtsm(mt);
+				  Thread t=new Thread(mtTemp);	
+				  t.start();
+			      }
+			  }
+			  else if(mt.get(i).getType() == Tank.MYTANK2)
+			  {  
+				  mt.remove(mt.get(i));
+				  if(Record.getNumofmy2() > 0)
+			      {
+				  Record.reduceNumofmy2();
+				  mtTemp=new MyTank(200,50,Tank.MYTANK2);
+				  mtTemp.setStep(5);
+				  mtTemp.setDirection(Tank.UP);
+				  mt.add(mtTemp);
+				  mtTemp.setVtsm(mt);
+				  Thread t=new Thread(mtTemp);	
+				  t.start();
+			      }
+			  }
+		}
+		}
+	}
+	public MyPanel(String s)
+	{	
+		Thread th=null;
+		MyTank mt=null;
+		vtsmy1=new Vector<MyTank>(1);
+		vtsmy2=new Vector<MyTank>(1);	
+		if(s.equals("newgame"))
+		{
+			mt=new MyTank(100,50,Tank.MYTANK1);
+		    mt.setDirection(Tank.UP);
+		    mt.setStep(5);
+		    vtsmy1.add(mt);
+		    mt.setVtsm(vtsmy1);
+		    th=new Thread(mt);
+		    th.start();
+		    mt=new MyTank(200,50,Tank.MYTANK2);
+		    mt.setDirection(Tank.UP);
+		    mt.setStep(5);
+		    vtsmy2.add(mt);
+		    mt.setVtsm(vtsmy2);
+		    th=new Thread(mt);
+		    th.start();
+		
+		Thread t[]=new Thread[numofEmy];
+		vts=new Vector<Enemy>(numofEmy);
+		for(int i=0;i<numofEmy;++i)
+		{
+			Enemy emy=new Enemy((i+1)*30,15);
+			emy.setDirection(Tank.DOWN);
+			emy.setStep(2);
+	        t[i]=new Thread(emy);
+		    t[i].start();
+		    vts.add(emy);
+		    emy.setEts(vts);
+		}
+		}
+		emyDraw=new Enemy(20,350);
+		emyDraw.setDirection(Tank.UP);
+		mt1Draw=new MyTank(80,350,Tank.MYTANK1);
+		mt1Draw.setDirection(Tank.UP);
+		mt2Draw=new MyTank(140,350,Tank.MYTANK2);
+		mt2Draw.setDirection(Tank.UP);
+	    emy1Clear=new Enemy(420,80);
+	    emy1Clear.setDirection(Tank.UP);
+	    emy2Clear=new Enemy(420,150);
+	    emy2Clear.setDirection(Tank.UP);
+	}
+	public void hitTank(Bullet b,Tank tk)
+	{    
+		 if(b != null)
+	     {
+			 if(tk.getType() == Tank.MYTANK1)
+	     {
+	    	 switch(tk.getDirection())
+	    	 {
+	    	  case Tank.UP:
+	    	  case Tank.DOWN:
+	    		  if(b.x >= tk.x-10 && b.x <= tk.x+10 && b.y >= tk.y-15 && b.y <= tk.y+15)
+	    		  {
+	    			  tk.isLive =false;
+	    			  b.isLive = false;
+	    			  break;
+	    		  }
+	    		
+	    	  case Tank.LEFT:
+	    	  case Tank.RIGHT:
+	    		  if(b.x >= tk.x-15 && b.x <= tk.x+15 && b.y >= tk.y-10 && b.y <= tk.y+10)
+	    		  {
+	    			  tk.isLive =false;
+	    			  b.isLive = false;
+	    			  break;
+	    		  }
+	    		  
+	    	 }
+	     }
+	    else if(tk.getType() == Tank.MYTANK2)
+		{
+		   switch(tk.getDirection())
+		   {
+		    case Tank.UP:
+		    case Tank.DOWN:
+		    if(b.x >= tk.x-10 && b.x <= tk.x+10 && b.y >= tk.y-15 && b.y <= tk.y+15)
+		    {
+		    	tk.isLive =false;
+		    	b.isLive = false;
+		    	break;
+		    }
+		    		
+		    case Tank.LEFT:
+		    case Tank.RIGHT:
+		    if(b.x >= tk.x-15 && b.x <= tk.x+15 && b.y >= tk.y-10 && b.y <= tk.y+10)
+		    {
+		    tk.isLive =false;
+		    b.isLive = false;
+		    break;
+		    }  		  
+		   }
+		}
+	     else if(tk.getType() == Tank.ENEMY)
+	     {		 
+	    	 switch(tk.getDirection())
+	    	 {
+	    	  case Tank.UP:
+	    	  case Tank.DOWN:
+	    		  if(b.x >= tk.x-10 && b.x <= tk.x+10 && b.y >= tk.y-15 && b.y <= tk.y+15)
+	    		  {
+	    			  tk.isLive =false;
+	    			  b.isLive = false;	
+	    			  break;
+	    		  }
+	    	  case Tank.LEFT:
+	    	  case Tank.RIGHT:
+	    		  if(b.x >= tk.x-15 && b.x <= tk.x+15 && b.y >= tk.y-10 && b.y <= tk.y+10)
+	    		  {
+	    			  tk.isLive =false;
+	    			  b.isLive = false;
+	    			  break;
+	    		  }
+	    	 }
+	synchronized(this)  
+	{         
+		if(tk.isLive == false)
+	    	    {
+	    		 if(b.owner == Bullet.MYTANK1)
+	    		 {
+	    			 Record.addClearemy1();
+	    		 }
+	    		 if(b.owner == Bullet.MYTANK2)
+	    		 {
+	    			 Record.addClearemy2();
+	    		 }
+	    	  }
+	}
+	     }
+	     }
+	}
+	public void hit(Bullet b1,Bullet b2)
+	{
+		if(b1 != null && b2 != null)
+		{
+           if(b1.x == b2.x && b1.y == b2.y)
+        	   b1.isLive=false;
+               b2.isLive=false;
+		}
+	}
+	public void draw(Graphics g,Tank tk)
+	{
+		if(tk.getType() == Tank.MYTANK1)
+		{
+			g.setColor(Color.CYAN);
+		}
+		if(tk.getType() == Tank.MYTANK2)
+		{
+			g.setColor(Color.blue);
+		}
+		if(tk.getType() == Tank.ENEMY) 
+		{
+			g.setColor(Color.green);
+		}	
+		switch(tk.getDirection())
+		{
+			 case Tank.UP:
+				 g.fill3DRect(tk.getX()-5, tk.getY()-10, 10, 20, false);
+				 g.fillOval(tk.getX()-4, tk.getY()-4, 8, 8);
+				 g.drawLine(tk.getX(), tk.getY(), tk.getX(), tk.getY()-15);
+				 g.fill3DRect(tk.getX()-10, tk.getY()-15, 5, 30, false);
+				 g.fill3DRect(tk.getX()+5, tk.getY()-15, 5, 30, false);
+				 break;
+			 case Tank.LEFT:
+				 g.fill3DRect(tk.getX()-10, tk.getY()-5, 20, 10, false);
+				 g.fillOval(tk.getX()-4, tk.getY()-4, 8, 8);
+				 g.drawLine(tk.getX(), tk.getY(), tk.getX()-15, tk.getY());	 
+				 g.fill3DRect(tk.getX()-15, tk.getY()-10, 30, 5, false);
+				 g.fill3DRect(tk.getX()-15, tk.getY()+5, 30, 5, false);
+				 break;
+			 case Tank.DOWN:
+				 g.fill3DRect(tk.getX()-5, tk.getY()-10, 10, 20, false);
+				 g.fillOval(tk.getX()-4, tk.getY()-4, 8, 8);
+				 g.drawLine(tk.getX(), tk.getY(), tk.getX(), tk.getY()+15);		 
+				 g.fill3DRect(tk.getX()-10, tk.getY()-15, 5, 30, false);
+				 g.fill3DRect(tk.getX()+5, tk.getY()-15, 5, 30, false);
+				 break;
+			 case Tank.RIGHT:
+				 g.fill3DRect(tk.getX()-10, tk.getY()-5, 20, 10, false);
+				 g.fillOval(tk.getX()-4, tk.getY()-4, 8, 8);
+				 g.drawLine(tk.getX(), tk.getY(), tk.getX()+15, tk.getY());
+				 g.fill3DRect(tk.getX()-15, tk.getY()-10, 30, 5, false);
+				 g.fill3DRect(tk.getX()-15, tk.getY()+5, 30, 5, false);
+				 break;
+		}
+
+	}
+	public void keyPressed(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		{  
+			if(arg0.getKeyCode() == KeyEvent.VK_UP)
+			{   
+				if(!vtsmy1.isEmpty())
+				{  
+				     if(vtsmy1.elementAt(0).y>15 )
+				       {
+				    	 vtsmy1.elementAt(0).y -= vtsmy1.elementAt(0).getStep();
+				    	 vtsmy1.elementAt(0).setDirection(Tank.UP);
+				       }
+				}
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_LEFT)
+			{   
+				if(!vtsmy1.isEmpty())
+				{ 
+				     if(vtsmy1.elementAt(0).x>15 )
+					{
+						vtsmy1.elementAt(0).x -= vtsmy1.elementAt(0).getStep();
+						vtsmy1.elementAt(0).setDirection(Tank.LEFT);
+					}
+				}
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_DOWN)
+			{   
+				if(!vtsmy1.isEmpty())
+				{ 
+				     if(vtsmy1.elementAt(0).y<285 )
+					{
+						vtsmy1.elementAt(0).y += vtsmy1.elementAt(0).getStep();
+						vtsmy1.elementAt(0).setDirection(Tank.DOWN);
+					}
+				}
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_RIGHT)
+			{   
+				if(!vtsmy1.isEmpty())
+				{ 
+				     if(vtsmy1.elementAt(0).x<385 )				
+					{
+						vtsmy1.elementAt(0).x += vtsmy1.elementAt(0).getStep();
+						vtsmy1.elementAt(0).setDirection(Tank.RIGHT);
+					}
+				}
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_W)
+			{  
+				if(!vtsmy2.isEmpty())
+				{					
+					if(vtsmy2.elementAt(0).y>15 )
+					{
+						vtsmy2.elementAt(0).y -= vtsmy2.elementAt(0).getStep();
+						vtsmy2.elementAt(0).setDirection(Tank.UP);
+					}
+				}
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_A)
+			{   
+				if(!vtsmy2.isEmpty())
+				{					
+					if(vtsmy2.elementAt(0).x>15 )
+					{
+						vtsmy2.elementAt(0).x -= vtsmy2.elementAt(0).getStep();
+						vtsmy2.elementAt(0).setDirection(Tank.LEFT);
+					}
+				}
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_S)
+			{   
+				if(!vtsmy2.isEmpty())
+				{					
+					if(vtsmy2.elementAt(0).y<285 )
+					{
+						vtsmy2.elementAt(0).y += vtsmy2.elementAt(0).getStep();
+						vtsmy2.elementAt(0).setDirection(Tank.DOWN);
+					}
+				}
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_D)
+			{   
+				if(!vtsmy2.isEmpty())
+				{					
+					if(vtsmy2.elementAt(0).x<385)
+					{
+						vtsmy2.elementAt(0).x += vtsmy2.elementAt(0).getStep();
+						vtsmy2.elementAt(0).setDirection(Tank.RIGHT);
+					}
+				}
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_J)
+			{   
+				if(!vtsmy1.isEmpty())
+				{  
+					if(vtsmy1.elementAt(0).isLive)
+					  if(vtsmy1.elementAt(0).numofbullet <=4)
+					     vtsmy1.elementAt(0).shot();
+				}
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_K)
+			{   
+				if(!vtsmy2.isEmpty())
+				{
+					if(vtsmy2.elementAt(0).isLive)
+				       if(vtsmy2.elementAt(0).numofbullet <=4)
+					      vtsmy2.elementAt(0).shot();
+				}
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
+			{
+				for(int i=0;i<vtsmy1.size();++i)
+				{
+					vtsmy1.get(i).setDirection(vtsmy1.get(i).getDirection());
+					vtsmy1.get(i).setStep(0);
+					for(int j=0;j<vtsmy1.get(i).vts.size();++j)
+					{
+					   vtsmy1.get(i).vts.get(j).setStep(0);
+					}
+				}
+				for(int i=0;i<vtsmy2.size();++i)
+				{
+					vtsmy2.get(i).setDirection(vtsmy2.get(i).getDirection());
+					vtsmy2.get(i).setStep(0);
+					for(int j=0;j<vtsmy2.get(i).vts.size();++j)
+					{
+					   vtsmy2.get(i).vts.get(j).setStep(0);
+					}
+				}
+				for(int i=0;i<vts.size();++i)
+				{
+					vts.get(i).setDirection(vts.get(i).getDirection());				
+					vts.get(i).setStep(0);
+					vts.get(i).numofbullet = 2;
+					for(int j=0;j<vts.get(i).vts.size();++j)
+					{  
+					   vts.get(i).vts.get(j).setStep(0);
+					}
+				}
+				isPause=true;
+			}
+			this.repaint();
+		}
+	}
+
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+    
+	public void hitMyTank()
+	{
+		for(int j=0;j<vts.size();++j)
+			if(!vtsmy1.isEmpty())
+			   if(vtsmy1.get(0).isLive && vts.get(j).isLive)
+			     {    
+				    for(int k=0;k<vts.get(j).vts.size();++k)
+					   hitTank(vts.get(j).vts.get(k),vtsmy1.get(0));
+			     }
+		for(int j=0;j<vts.size();++j)
+			if(!vtsmy2.isEmpty())
+			   if(vtsmy2.get(0).isLive && vts.get(j).isLive)
+			      {    
+				    for(int k=0;k<vts.get(j).vts.size();++k)
+					   hitTank(vts.get(j).vts.get(k),vtsmy2.get(0));
+			      }
+	 }
+	public void hitEnemyTank()
+	{
+		 for(int i=0;i<vts.size();++i)
+		  {	
+			 if(!vtsmy1.isEmpty())
+			 {
+			   if(vts.get(i).isLive && vtsmy1.get(0).isLive)
+			  {    
+				    for(int k=0;k<vtsmy1.get(0).vts.size();++k)
+					   hitTank(vtsmy1.get(0).vts.get(k),vts.get(i));
+			  }
+			 }
+			 if(!vtsmy2.isEmpty())
+			 {
+			if(vts.get(i).isLive && vtsmy2.get(0).isLive)
+			  {    
+				    for(int k=0;k<vtsmy2.get(0).vts.size();++k)
+					   hitTank(vtsmy2.get(0).vts.get(k),vts.get(i));
+			  }
+			 }
+		   }
+	}
+	public void run(){
+		// TODO Auto-generated method stub
+		while(!isPause)
+		{
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			hitEnemyTank();
+			hitMyTank();
+			this.repaint();
+		}
+	}
+	
+}

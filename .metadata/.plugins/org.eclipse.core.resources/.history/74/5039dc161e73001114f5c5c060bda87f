@@ -1,0 +1,115 @@
+/*
+ * 功能：事件监听机制
+ */
+package com.test;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.EventListener;
+public class test extends JFrame{
+
+	MyPanel mp=null;
+	MyTank  mt=null;
+//	JButton jb1,jb2;
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+    test t=new test();
+//  t.draw();
+	}
+    
+	public test()
+	{   
+		mp=new MyPanel();
+		mt=new MyTank(10,10,2);
+ //     jb1=new JButton("黑色");
+		
+//		jb2=new JButton("红色");
+	}
+	public void draw()
+	{
+//		this.add(jb1,BorderLayout.NORTH);
+		this.add(mp);
+//		this.add(jb2,BorderLayout.SOUTH);
+		
+		this.setSize(200,250);
+		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		jb1.addActionListener(mp);
+//		jb2.addActionListener(mp);
+	}
+}
+
+class MyPanel extends JPanel
+{
+/*	public void actionPerformed(ActionEvent g) {
+		// TODO Auto-generated method stub
+		if(g.getActionCommand().equals("红色"))
+			this.setBackground(Color.red);
+		if(g.getActionCommand().equals("黑色"))
+		    this.setBackground(Color.black);
+//		repaint();
+	}
+*/ 
+	//MyTank mt=new MyTank()
+	public void paint(Graphics g)
+	{
+		super.paint(g);
+	    	
+		g.setColor(Color.green);
+		g.fill3DRect(10,10,15,40,false);
+		g.fill3DRect(0, 0, 10, 10,false);
+		g.fill3DRect(0, 0, 10, 10,false);
+		g.fillOval(0, 0, 10, 10);
+		g.drawLine(0, 0, 10, 10);
+	}
+	
+}
+
+class Tank
+{
+	int x;
+	int y;
+	int step;
+	int direction;
+	public int getDirection() {
+		return direction;
+	}
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+	public void setStep(int step) {
+		this.step = step;
+	}
+
+	public Tank(int x,int y)
+	{
+		this.x=x;
+		this.y=y;
+		step=1;
+	    direction=-1;
+	}
+	public int getX() {
+		return x;
+	}
+	public int getY() {
+		return y;
+	}
+	public int getStep() {
+		return step;
+	}
+}
+
+class MyTank extends Tank
+{   
+	int type;
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	public MyTank(int x,int y)
+	{
+		super(x,y);
+	}
+}

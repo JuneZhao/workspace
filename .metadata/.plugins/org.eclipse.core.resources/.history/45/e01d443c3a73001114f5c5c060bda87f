@@ -1,0 +1,73 @@
+package com.test;
+
+class Tank
+{
+	public static final int UP=0;
+	public static final int LEFT=1;
+	public static final int DOWN=2;
+	public static final int RIGHT=3;
+	public static final int MYTANK=4;
+	public static final int ENEMY=5;
+	int x;
+	int y;
+	int step;
+	int direction;
+	int type;
+	public int getType() {
+		return type;
+	}
+	public void setType() {
+		this.type = -1;
+	}
+	public int getDirection() {
+		return direction;
+	}
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+	public void setStep(int step) {
+		this.step = step;
+	}
+
+	public Tank(int x,int y)
+	{
+		this.x=x;
+		this.y=y;
+		step=1;
+	    direction=0;
+	    type=-1;
+	}
+	public int getX() {
+		return x;
+	}
+	public int getY() {
+		return y;
+	}
+	public int getStep() {
+		return step;
+	}
+}
+
+class MyTank extends Tank
+{   
+	public int getType() {
+		return type;
+	}
+	public MyTank(int x,int y)
+	{
+		super(x,y);
+		type=0;
+	}
+}
+
+class Enemy extends Tank
+{
+	public int getType() {
+		return type;
+	}
+	public Enemy(int x,int y)
+	{
+		super(x,y);
+		type=1;
+	}
+}

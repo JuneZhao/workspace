@@ -1,0 +1,37 @@
+/*
+ * 功能：事件监听机制
+ */
+package com.test;
+import java.awt.*;
+import javax.swing.*;
+//import java.awt.event.*;
+import java.util.EventListener;
+public class test extends JFrame{
+
+	MyPanel mp=null;
+	JButton jb1,jb2;
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+    
+	}
+    
+	public test()
+	{   
+		mp=new MyPanel();
+        jb1=new JButton("黑色");
+		
+		jb2=new JButton("红色");
+		
+		this.add(mp);
+	}
+}
+
+class MyPanel extends JPanel implements EventListener
+{
+	public void paint(Graphics g)
+	{
+		super.paint(g);
+		
+		g.fill3DRect(0, 0, 200, 200, false);	
+	}
+}

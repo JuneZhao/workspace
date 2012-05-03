@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.awt.Color"/>
+<fullyQualifiedTypeName name="java.io.Serializable"/>
+<fullyQualifiedTypeName name="java.net.Socket"/>
+<fullyQualifiedTypeName name="java.io.ObjectOutputStream"/>
+<fullyQualifiedTypeName name="com.qq.common.Message"/>
+<fullyQualifiedTypeName name="javax.swing.JOptionPane"/>
+<fullyQualifiedTypeName name="com.qq.client.manage.ManageCCST"/>
+<fullyQualifiedTypeName name="com.qq.client.manage.ManageQqChat"/>
+<fullyQualifiedTypeName name="com.qq.server.thread.ManageSCCT"/>
+</qualifiedTypeNameHistroy>

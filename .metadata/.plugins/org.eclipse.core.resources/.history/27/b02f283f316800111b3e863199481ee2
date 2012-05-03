@@ -1,0 +1,48 @@
+package com.zhaojun;
+
+public class Test1 {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+      
+	}
+}
+interface Usb
+{
+	final int a=1;
+	public void use();
+	public void set();
+}
+
+class Device
+{
+     int usedYear;
+     public void getName()
+     {
+    	 
+     }
+}
+class Computer extends Device implements Usb
+{  
+    public void use()
+    {
+    	
+    }
+    public void set()
+    {
+    	
+    }
+    
+    public void getName()
+    {
+    	System.out.println("Œ“ «µÁƒ‘");
+    }
+    
+    public int getusedYear()
+    {
+    	return this.usedYear;
+    }
+}

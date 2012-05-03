@@ -1,0 +1,102 @@
+package com.zhaojun;
+
+public class Test1 {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+      
+	}
+}
+interface Usb
+{
+	final int a=1;
+	public void use();
+	public void set();
+}
+
+class Device
+{
+     int usedYear;
+     String name;
+     public String getName()
+     {
+    	 return name;
+     }
+     public int getusedYear()
+     {
+    	 return usedYear;
+     }
+}
+class Computer extends Device implements Usb
+{  
+	Computer(int usedYear,String name)
+	{
+		this.usedYear = usedYear;
+		this.name =name;
+	}
+    public void use()
+    {// TODO Auto-generated method stub
+    	
+    }
+    public void set()
+    {// TODO Auto-generated method stub
+    	
+    }
+    @Override
+    public String getName()
+    {// TODO Auto-generated method stub
+    	return super.getName();
+    }
+    
+    public int getusedYear()
+    {// TODO Auto-generated method stub
+    	return super.getusedYear();
+    }
+}
+
+class Camera extends Device implements Usb
+{
+    Camera(int usedYear,String name)
+    {
+    	this.name = name;
+    	this.usedYear =usedYear;
+    }
+	public void use() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void set() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return super.getName();
+	}
+	
+    public int getusedYear()
+    {// TODO Auto-generated method stub
+    	return super.getusedYear();
+    }
+}
+
+class Person
+{
+	String name;
+	Person(String name)
+	{
+		this.name = name;
+	}
+	public void ownDevice(Device dc)
+	{
+		String deviceName = dc.getName();
+		int usedYear= dc.getusedYear();
+		System.out.println(name+"拥有的设备是"+deviceName+"已经用了"+usedYear+"年");
+	}
+}

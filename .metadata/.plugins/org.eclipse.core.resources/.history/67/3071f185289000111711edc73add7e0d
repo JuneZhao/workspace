@@ -1,0 +1,56 @@
+package com.qq.client.manage;
+
+import java.util.*;
+import java.io.*;
+import java.net.*;
+
+import com.qq.common.*;
+import com.qq.client.view.*;
+public class ClientConnectServerThread extends Thread{
+      Socket s;
+    public Socket getS() {
+		return s;
+	}
+	public ClientConnectServerThread(Socket s)
+      {
+    	  this.s = s;
+      }
+      public void run()
+      {
+    	  while(ManageCCST.getCountCCST()>0)
+    	  {
+    		  try {
+    			
+				ObjectInputStream ois=new ObjectInputStream(s.getInputStream());
+				Message m=(Message)ois.readObject();
+				
+				if(m.getMsgType() == MessageType.Message_Normal)
+				{
+					System.out.println("收到了消息"+m.getReceiverId()+" "+ m.getSenderId()+" "+m.getContent());
+					QqChat qc=ManageQqChat.get(m.getReceiverId()+" "+ m.getSenderId());
+					qc.show(m);
+				}
+				if(m.getMsgType() == MessageType.Message_ret_FriendOnline)
+				{   
+					System.out.println(m.getReceiverId()+"客户端在线好友"+m.getContent());
+					QqList qqList=ManageQqList.getQqList(m.getReceiverId());
+					qqList.updateFriend(m.getContent());	
+
+				}
+				if(m.getMsgType() == MessageType.Message_Notify)
+				{   
+					System.out.println(m.getSenderId()+"上线了");
+					QqList qqList=ManageQqList.getQqList(m.getReceiverId());
+					qqList.updateFriend(m.getSenderId());					
+					
+				}
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally{
+				
+			}
+    	  }
+      }
+}

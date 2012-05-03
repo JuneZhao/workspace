@@ -1,0 +1,59 @@
+/*
+ * 功能：事件监听机制
+ */
+package com.test;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.EventListener;
+public class test extends JFrame{
+
+	MyPanel mp=null;
+	JButton jb1,jb2;
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+    test t=new test();
+	}
+    
+	public test()
+	{   
+		mp=new MyPanel();
+        jb1=new JButton("黑色");
+		
+		jb2=new JButton("红色");
+		
+
+	}
+	public void draw()
+	{
+		this.add(jb1,BorderLayout.NORTH);
+		this.add(mp);
+		this.add(jb2,BorderLayout.SOUTH);
+		
+		this.setSize(200,250);
+		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jb1.addActionListener(mp);
+		jb2.addActionListener(mp);
+	}
+}
+
+class MyPanel extends JPanel implements ActionListener
+{
+	public void actionPerformed(ActionEvent g) {
+		// TODO Auto-generated method stub
+		if(g.getActionCommand().equals("红色"))
+			this.setBackground(Color.red);
+		if(g.getActionCommand().equals("黑色"))
+		    this.setBackground(Color.black);
+//		repaint();
+	}
+
+	public void paint(Graphics g)
+	{
+		super.paint(g);
+		
+//		g.setColor(Color.black);
+		g.fillRect(0, 0, 200, 200);	
+	}
+}

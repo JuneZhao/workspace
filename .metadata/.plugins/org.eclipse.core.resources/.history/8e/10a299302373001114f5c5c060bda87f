@@ -1,0 +1,84 @@
+/*
+ * 功能：事件监听机制
+ */
+package com.test;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.*;
+//import java.util.EventListener;
+//import java.util.Vector;
+public class test extends JFrame{
+
+	MyPanel mp=null;
+	public static void main(String[] args) {
+	// TODO Auto-generated method stub
+    test t=new test();
+	}
+    
+	public test()
+	{   
+		mp=new MyPanel();
+
+	}
+	public void show()
+	{
+		this.add(mp);
+		
+		this.setSize(200,250);
+		this.setVisible(true);
+		this.addKeyListener(mp);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+}
+
+class MyPanel extends JPanel implements KeyListener
+{
+	MyTank  mt=null;
+	int sizeofEmy=3;
+    Vector<Enemy> vts=null;
+	public void paint(Graphics g)
+	{
+		super.paint(g);
+	    	
+		g.setColor(Color.green);
+		
+		draw(g,mt);
+		
+		for(int j=0;j<vts.size();++j)
+		{
+			draw(g,vts.get(j));
+		}
+	}
+   
+	public MyPanel()
+	{
+		mt=new MyTank(50,50);
+		
+		vts=new Vector<Enemy>(sizeofEmy);
+		for(int i=0;i<sizeofEmy;++i)
+		{
+			Enemy emy=new Enemy((i+1)*50,0);
+			vts.add(emy);
+		}
+	}
+	public void draw(Graphics g,Tank tk)
+	{
+		if(tk.get)
+	}
+	public void keyPressed(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+}

@@ -1,0 +1,179 @@
+/*
+ * 功能：事件监听机制
+ */
+package com.test;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.*;
+//import java.util.EventListener;
+//import java.util.Vector;
+public class test extends JFrame{
+    
+	MyPanel mp=null;
+	public static void main(String[] args) {
+	// TODO Auto-generated method stub
+    test t=new test();
+	}
+    
+	public test()
+	{   
+		mp=new MyPanel();
+		
+		this.add(mp);
+		
+		this.setSize(400,300);
+		this.addKeyListener(mp);
+		Thread t=new Thread(mp);
+		t.start();
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
+
+	}
+}
+
+class MyPanel extends JPanel implements KeyListener,Runnable
+{
+	MyTank  mt=null;
+	int sizeofEmy=3;
+    Vector<Enemy> vts=null;
+	public void paint(Graphics g)
+	{
+		super.paint(g);
+	    	
+		g.setColor(Color.red);
+		g.fillRect(0, 0, 400, 300);
+		draw(g,mt);
+		
+//		if(Bullet.numofbullet>=1 && mt.vts.get(Bullet.numofbullet-1) != null && mt.vts.get(Bullet.numofbullet-1).isLive)
+//		{
+//			g.drawLine(mt.vts.get(Bullet.numofbullet-1).x,mt.vts.get(Bullet.numofbullet-1).y,mt.vts.get(Bullet.numofbullet-1).x,mt.vts.get(Bullet.numofbullet-1).y);
+//		}
+		for(int i=0;i<mt.vts.size();++i)
+		{   
+			g.drawLine(mt.vts.get(i).x, mt.vts.get(i).y, mt.vts.get(i).x, mt.vts.get(i).y);
+		}
+		for(int j=0;j<vts.size();++j)
+		{
+			draw(g,vts.get(j));
+			for(int k=0;k<vts.get(j).vts.size();++k)
+			  g.drawLine(vts.get(j).vts.get(k).x, vts.get(j).vts.get(k).y, vts.get(j).vts.get(k).x, vts.get(j).vts.get(k).y);
+		}
+	}
+   
+	public MyPanel()
+	{
+		mt=new MyTank(100,50);
+		mt.setStep(5);
+		mt.setDirection(Tank.UP);
+		
+		vts=new Vector<Enemy>(sizeofEmy);
+		for(int i=0;i<sizeofEmy;++i)
+		{
+			Enemy emy=new Enemy((i+1)*50,15);
+			vts.add(emy);
+			vts.get(i).setDirection(Tank.DOWN);
+			Thread t=new Thread(vts.get(i));
+			t.start();
+		}
+		
+	}
+	public void draw(Graphics g,Tank tk)
+	{
+		if(tk.getType() == Tank.MYTANK)
+		{
+			g.setColor(Color.CYAN);
+		}
+		if(tk.getType() == Tank.ENEMY) 
+		{
+			g.setColor(Color.green);
+		}	
+		switch(tk.getDirection())
+		{
+			 case Tank.UP:
+				 g.drawOval(tk.getX()-4, tk.getY()-4, 8, 8);
+				 g.drawLine(tk.getX(), tk.getY(), tk.getX(), tk.getY()-15);
+				 g.draw3DRect(tk.getX()-5, tk.getY()-10, 10, 20, false);
+				 g.draw3DRect(tk.getX()-10, tk.getY()-15, 5, 30, false);
+				 g.draw3DRect(tk.getX()+5, tk.getY()-15, 5, 30, false);
+				 break;
+			 case Tank.LEFT:
+				 g.drawOval(tk.getX()-4, tk.getY()-4, 8, 8);
+				 g.drawLine(tk.getX(), tk.getY(), tk.getX()-15, tk.getY());
+				 g.draw3DRect(tk.getX()-10, tk.getY()-5, 20, 10, false);
+				 g.draw3DRect(tk.getX()-15, tk.getY()-10, 30, 5, false);
+				 g.draw3DRect(tk.getX()-15, tk.getY()+5, 30, 5, false);
+				 break;
+			 case Tank.DOWN:
+				 g.drawOval(tk.getX()-4, tk.getY()-4, 8, 8);
+				 g.drawLine(tk.getX(), tk.getY(), tk.getX(), tk.getY()+15);
+				 g.draw3DRect(tk.getX()-5, tk.getY()-10, 10, 20, false);
+				 g.draw3DRect(tk.getX()-10, tk.getY()-15, 5, 30, false);
+				 g.draw3DRect(tk.getX()+5, tk.getY()-15, 5, 30, false);
+				 break;
+			 case Tank.RIGHT:
+				 g.drawOval(tk.getX()-4, tk.getY()-4, 8, 8);
+				 g.drawLine(tk.getX(), tk.getY(), tk.getX()+15, tk.getY());
+				 g.draw3DRect(tk.getX()-10, tk.getY()-5, 20, 10, false);
+				 g.draw3DRect(tk.getX()-15, tk.getY()-10, 30, 5, false);
+				 g.draw3DRect(tk.getX()-15, tk.getY()+5, 30, 5, false);
+				 break;
+		}
+
+	}
+	public void keyPressed(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		{
+			if(arg0.getKeyCode() == KeyEvent.VK_UP)
+			{
+				mt.y -= mt.getStep();
+				mt.setDirection(Tank.UP);
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_LEFT)
+			{
+				mt.x -= mt.getStep();
+				mt.setDirection(Tank.LEFT);
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_DOWN)
+			{
+				mt.y += mt.getStep();
+				mt.setDirection(Tank.DOWN);
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_RIGHT)
+			{
+				mt.x += mt.getStep();
+				mt.setDirection(Tank.RIGHT);
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_J)
+			{
+				mt.shot();
+			}
+			repaint();
+		}
+	}
+
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void run() {
+		// TODO Auto-generated method stub
+		while(true)
+		{
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			repaint();
+		}
+	}
+	
+}

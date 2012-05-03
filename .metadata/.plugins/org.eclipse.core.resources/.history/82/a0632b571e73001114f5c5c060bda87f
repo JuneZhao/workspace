@@ -1,0 +1,50 @@
+package com.test;
+
+class Tank
+{
+	int x;
+	int y;
+	int step;
+	int direction;
+	public int getDirection() {
+		return direction;
+	}
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+	public void setStep(int step) {
+		this.step = step;
+	}
+
+	public Tank(int x,int y)
+	{
+		this.x=x;
+		this.y=y;
+		step=1;
+	    direction=-1;
+	}
+	public int getX() {
+		return x;
+	}
+	public int getY() {
+		return y;
+	}
+	public int getStep() {
+		return step;
+	}
+}
+
+class MyTank extends Tank
+{   
+	int type;
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	public MyTank(int x,int y)
+	{
+		super(x,y);
+	}
+}

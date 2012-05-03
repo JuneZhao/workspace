@@ -1,0 +1,95 @@
+package com.test;
+
+class Bullet implements Runnable
+{
+	int x;
+	int y;
+	int direction;
+	int step;
+	boolean isLive;
+    public Bullet(int x,int y,int direction)
+    {
+    	this.x=x;
+    	this.y=y;
+    	this.direction=direction;
+    	this.step=1;
+    	isLive=true;
+    }
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+}
+class Tank
+{
+	public static final int UP=0;
+	public static final int LEFT=1;
+	public static final int DOWN=2;
+	public static final int RIGHT=3;
+	public static final int MYTANK=4;
+	public static final int ENEMY=5;
+	public static final int UNDEFINED=-1;
+	int x;
+	int y;
+	int step;
+	int direction;
+	int type;
+	public int getType() {
+		return type;
+	}
+	public void setType() {
+		this.type = UNDEFINED;
+	}
+	public int getDirection() {
+		return direction;
+	}
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+	public void setStep(int step) {
+		this.step = step;
+	}
+
+	public Tank(int x,int y)
+	{
+		this.x=x;
+		this.y=y;
+		step=1;
+	    direction=UP;
+	    type=UNDEFINED;
+	}
+	public int getX() {
+		return x;
+	}
+	public int getY() {
+		return y;
+	}
+	public int getStep() {
+		return step;
+	}
+}
+
+class MyTank extends Tank
+{   
+	public int getType() {
+		return type;
+	}
+	public MyTank(int x,int y)
+	{
+		super(x,y);
+		type=MYTANK;
+	}
+}
+
+class Enemy extends Tank
+{
+	public int getType() {
+		return type;
+	}
+	public Enemy(int x,int y)
+	{
+		super(x,y);
+		type=ENEMY;
+	}
+}

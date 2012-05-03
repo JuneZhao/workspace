@@ -1,0 +1,148 @@
+/*
+ * 功能：事件监听机制
+ */
+package com.test;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.*;
+//import java.util.EventListener;
+//import java.util.Vector;
+public class test extends JFrame{
+
+	MyPanel mp=null;
+	public static void main(String[] args) {
+	// TODO Auto-generated method stub
+    test t=new test();
+	}
+    
+	public test()
+	{   
+		mp=new MyPanel();
+		
+		this.add(mp);
+		
+		this.setSize(400,300);
+		this.addKeyListener(mp);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
+
+	}
+}
+
+class MyPanel extends JPanel implements KeyListener
+{
+	MyTank  mt=null;
+	int sizeofEmy=3;
+    Vector<Enemy> vts=null;
+	public void paint(Graphics g)
+	{
+		super.paint(g);
+	    	
+		g.setColor(Color.red);
+		g.fillRect(0, 0, 400, 300);
+		draw(g,mt);
+		
+		for(int j=0;j<vts.size();++j)
+		{
+			draw(g,vts.get(j));
+			
+		}
+	}
+   
+	public MyPanel()
+	{
+		mt=new MyTank(100,50);
+//		mt.setStep(5);
+		mt.setDirection(0);
+		
+		vts=new Vector<Enemy>(sizeofEmy);
+		for(int i=0;i<sizeofEmy;++i)
+		{
+			Enemy emy=new Enemy((i+1)*50,15);
+			vts.add(emy);
+			vts.get(i).setDirection(2);	
+		}
+	}
+	public void draw(Graphics g,Tank tk)
+	{
+		if(tk.getType() == 0)
+		{
+			g.setColor(Color.CYAN);
+		}
+		if(tk.getType() == 1) 
+		{
+			g.setColor(Color.green);
+		}	
+		switch(tk.getDirection())
+		{
+			 case 0:
+				 g.drawOval(tk.getX()-4, tk.getY()-4, 8, 8);
+				 g.drawLine(tk.getX(), tk.getY(), tk.getX(), tk.getY()-15);
+				 g.draw3DRect(tk.getX()-5, tk.getY()-10, 10, 20, false);
+				 g.draw3DRect(tk.getX()-10, tk.getY()-15, 5, 30, false);
+				 g.draw3DRect(tk.getX()+5, tk.getY()-15, 5, 30, false);
+				 break;
+			 case 1:
+				 g.drawOval(tk.getX()-4, tk.getY()-4, 8, 8);
+				 g.drawLine(tk.getX(), tk.getY(), tk.getX()-15, tk.getY());
+				 g.draw3DRect(tk.getX()-10, tk.getY()-5, 20, 10, false);
+				 g.draw3DRect(tk.getX()-15, tk.getY()-10, 30, 5, false);
+				 g.draw3DRect(tk.getX()-15, tk.getY()+5, 30, 5, false);
+				 break;
+			 case 2:
+				 g.drawOval(tk.getX()-4, tk.getY()-4, 8, 8);
+				 g.drawLine(tk.getX(), tk.getY(), tk.getX(), tk.getY()+15);
+				 g.draw3DRect(tk.getX()-5, tk.getY()-10, 10, 20, false);
+				 g.draw3DRect(tk.getX()-10, tk.getY()-15, 5, 30, false);
+				 g.draw3DRect(tk.getX()+5, tk.getY()-15, 5, 30, false);
+				 break;
+			 case 3:
+				 g.drawOval(tk.getX()-4, tk.getY()-4, 8, 8);
+				 g.drawLine(tk.getX(), tk.getY(), tk.getX()+15, tk.getY());
+				 g.draw3DRect(tk.getX()-10, tk.getY()-5, 20, 10, false);
+				 g.draw3DRect(tk.getX()-15, tk.getY()-10, 30, 5, false);
+				 g.draw3DRect(tk.getX()-15, tk.getY()+5, 30, 5, false);
+				 break;
+		}
+
+	}
+	public void keyPressed(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		{
+			if(arg0.getKeyCode() == KeyEvent.VK_UP)
+			{
+				mt.y -= mt.getStep();
+				mt.setDirection(0);
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_LEFT)
+			{
+				mt.x -= mt.getStep();
+				mt.setDirection(1);
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_DOWN)
+			{
+				mt.y += mt.getStep();
+				mt.setDirection(2);
+			}
+			if(arg0.getKeyCode() == KeyEvent.VK_RIGHT)
+			{
+				mt.x += mt.getStep();
+				mt.setDirection(3);
+			}
+			
+			repaint();
+		}
+	}
+
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+}

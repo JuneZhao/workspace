@@ -1,0 +1,129 @@
+package com.zhaojun;
+import java.util.*;
+public class Test1 {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+	  ArrayList al=new ArrayList();
+      Computer c1=new Computer(3,"惠普");
+      Camera c2=new Camera(4,"柯达");
+      Person p1=new Person("小强",c1);
+      Person p2=new Person("小明",c2);
+      c1.set();
+      c1.use(); 
+      c2.use();
+ //   p1.ownedDevice(c1);
+ //   p2.ownedDevice(c2);
+      al.add(p1);
+      al.add(p2);
+	}
+}
+interface Usb
+{
+	final static int a=1;
+	public void use();
+	public void set();
+}
+
+class Device
+{
+     int usedYear;
+     String name;
+     public String getName()
+     {
+    	 return " ";
+ //   	 return name;
+     }
+     public int getusedYear()
+     {
+    	 return 0;
+//    	 return usedYear;
+     }
+}
+class Computer extends Device implements Usb
+{  
+	int nflagInterface;
+	Computer(int usedYear,String name)
+	{
+		this.usedYear = usedYear;
+		this.name = name;
+		nflagInterface = 0;
+	}
+    public void use()
+    {// TODO Auto-generated method stub
+    	if(nflagInterface == 1)
+    	   System.out.println("电脑可以使用usb接口");
+    	else
+    	   System.out.println("电脑未设置接口，请先设置接口！");
+    }
+    public void set()
+    {// TODO Auto-generated method stub
+    	nflagInterface = 1;
+    	System.out.println("成功设置了电脑usb接口");
+    }
+    @Override
+    public String getName()
+    {// TODO Auto-generated method stub
+    	return name;
+    }
+    
+    public int getusedYear()
+    {// TODO Auto-generated method stub
+    	return usedYear;
+    }
+}
+
+class Camera extends Device implements Usb
+{
+	int nflagInterface;
+    Camera(int usedYear,String name)
+    {
+    	this.name = name;
+    	this.usedYear = usedYear;
+    	nflagInterface=0;
+    }
+	public void use() {
+		// TODO Auto-generated method stub
+    	if(nflagInterface == 1)
+     	   System.out.println("照相机可以使用usb接口");
+    	else
+		   System.out.println("照相机未设置接口，请先设置接口！");
+	}
+
+	public void set() {
+		// TODO Auto-generated method stub
+		nflagInterface = 1;
+		System.out.println("成功设置了照相机usb接口");
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return name;
+	}
+	
+    public int getusedYear()
+    {// TODO Auto-generated method stub
+    	return usedYear;
+    }
+}
+
+class Person
+{
+	String name;
+	Device dc;
+	Person(String name,Device dc)
+	{
+		this.name = name;
+		this.dc =dc;
+	}
+	public void ownedDevice(Device dc)
+	{
+		String deviceName = dc.getName();
+		int usedYear= dc.getusedYear();
+		System.out.println(name+"拥有的设备是"+deviceName+",已经用了"+usedYear+"年");
+	}
+}
